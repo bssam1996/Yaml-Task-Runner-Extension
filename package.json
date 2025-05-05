@@ -1,0 +1,69 @@
+{
+  "name": "yaml-task-runner",
+  "displayName": "YAML Task Runner",
+  "description": "Run specific tasks when hovering over them with specific tools and flags. It picks up the name of the task and complete the rest based on the configuration.",
+  "version": "0.0.1",
+  "icon": "images/yaml-task-runner.png",
+  "publisher": "bassamabozaid",
+  "engines": {
+    "vscode": "^1.99.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:yaml"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [{
+        "command": "yaml-task-runner.runYamlTask",
+        "title": "Run YAML Task"
+      },
+      {
+        "command": "yaml-task-runner.showYamlTasks",
+        "title": "Show Yaml Tasks"
+      }
+    ],
+    "configuration": {
+      "title": "Yaml Task Runner",
+      "type": "object",
+      "properties": {
+        "yaml-task-runner.tool": {
+          "type": "string",
+          "default": "",
+          "scope": "application",
+          "description": "Tool to be used when running the task. eg. 'docker', 'docker-compose', 'kubectl', 'helm', 'kustomize', 'terraform', etc."
+        },
+        "yaml-task-runner.mainFlag": {
+          "type": "string",
+          "default": "",
+          "scope": "application",
+          "description": "Add the task name in a flag. Leave empty if you want to run the task directly. eg. docker run -name '<task-name>'"
+        },
+        "yaml-task-runner.additionalFlags": {
+          "type": "array",
+          "default": [],
+          "scope": "application",
+          "description": "Additional Flags to be added. eg. docker run -name '<task-name>' -rm -interactive"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.99.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "eslint": "^9.25.1",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.5.2"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  }
+}
