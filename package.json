@@ -2,9 +2,10 @@
   "name": "yaml-task-runner",
   "displayName": "YAML Task Runner",
   "description": "Run specific tasks when hovering over them with specific tools and flags. It picks up the name of the task and complete the rest based on the configuration.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "icon": "images/yaml-task-runner.png",
   "publisher": "bassamabozaid",
+  "repository": "https://github.com/bssam1996/Yaml-Task-Runner-Extension",
   "engines": {
     "vscode": "^1.99.0"
   },
@@ -46,6 +47,22 @@
           "default": [],
           "scope": "application",
           "description": "Additional Flags to be added. eg. docker run -name '<task-name>' -rm -interactive"
+        },
+        "yaml-task-runner.exportToFile": {
+          "type": "string",
+          "default": "",
+          "scope": "application",
+          "description": "Add '> <filename>' at the end of the command to export the output to a file. eg. docker run -name '<task-name>' > <filename>"
+        },
+        "yaml-task-runner.taskPath": {
+            "type": "string",
+            "default": "build.spec.tasks",
+            "description": "Path to the tasks array in the YAML file (e.g., 'build.spec.tasks')."
+        },
+        "yaml-task-runner.identifierField": {
+            "type": "string",
+            "default": "name",
+            "description": "Field name used to identify tasks (e.g., 'name')."
         }
       }
     }

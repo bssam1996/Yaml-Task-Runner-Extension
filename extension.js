@@ -59,51 +59,48 @@ function activate(context) {
                 vscode.window.showErrorMessage('No command specified');
                 return;
             }
+            // Create a new terminal or reuse an existing one
+            const terminal = vscode.window.createTerminal('YAML Task Runner');
+            terminal.show(true); // Show the terminal
+            terminal.sendText(commandToRun); // Send the command to the terminal
+
+            // // Show the command that's about to run
+            outputChannel.appendLine(`\nRunning command: ${commandToRun}`);
+            // outputChannel.show(true);
             
-            // Show the command that's about to run
-            outputChannel.appendLine(`\n--- Running command: ${commandToRun} ---`);
-            outputChannel.show(true);
+            // // Execute the command
+            // const process = exec(commandToRun);
             
-            // Execute the command
-            const process = exec(commandToRun);
+            // // Stream output in real-time
+            // process.stdout.on('data', (data) => {
+            //     outputChannel.append(data.toString());
+            // });
             
-            // Stream output in real-time
-            process.stdout.on('data', (data) => {
-                outputChannel.append(data.toString());
-            });
+            // process.stderr.on('data', (data) => {
+            //     outputChannel.append(data.toString());
+            // });
             
-            process.stderr.on('data', (data) => {
-                outputChannel.append(data.toString());
-            });
+            // process.on('close', (code) => {
+            //     if (code === 0) {
+            //         outputChannel.appendLine(`\n--- Command completed successfully ---`);
+            //     } else {
+            //         outputChannel.appendLine(`\n--- Command failed with exit code ${code} ---`);
+            //     }
+            // });
             
-            process.on('close', (code) => {
-                if (code === 0) {
-                    outputChannel.appendLine(`\n--- Command completed successfully ---`);
-                } else {
-                    outputChannel.appendLine(`\n--- Command failed with exit code ${code} ---`);
-                }
-            });
-            
-            process.on('error', (error) => {
-                outputChannel.appendLine(`\nError: ${error.message}`);
-                vscode.window.showErrorMessage(`Failed to execute command: ${error.message}`);
-            });
+            // process.on('error', (error) => {
+            //     outputChannel.appendLine(`\nError: ${error.message}`);
+            //     vscode.window.showErrorMessage(`Failed to execute command: ${error.message}`);
+            // });
         }
     );
-	
-	// Register a status bar item
-    const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-    statusBarItem.text = "$(play) YAML Tasks";
-    statusBarItem.tooltip = "View and run YAML tasks";
-    statusBarItem.command = "yaml-task-runner.showYamlTasks";
-    statusBarItem.show();
 
 	// Register command to show all tasks in current file
     const showTasksCommand = vscode.commands.registerCommand(
         'yaml-task-runner.showYamlTasks',
         async () => {
             const editor = vscode.window.activeTextEditor;
-            if (!editor || !editor.document.fileName.endsWith('.yml')) {
+            if (!editor || !(editor.document.fileName.endsWith('.yml') || editor.document.fileName.endsWith('.yaml'))) {
                 vscode.window.showInformationMessage('No YAML file is active');
                 return;
             }
@@ -139,11 +136,17 @@ function activate(context) {
     );
 
     function extractTasksWithName(parsedYaml) {
+        const configurations = vscode.workspace.getConfiguration('yaml-task-runner');
+        const taskPath = configurations.get('taskPath', 'build.spec.tasks'); // Default path
+        const identifierField = configurations.get('identifierField', 'name'); // Default identifier
+
         const tasks = [];
-        if (parsedYaml && parsedYaml.build && parsedYaml.build.spec && Array.isArray(parsedYaml.build.spec.tasks)) {
-            for (const task of parsedYaml.build.spec.tasks) {
-                if (task.name) {
-                    tasks.push({ name: task.name, command: parseTaskName(task.name) });
+        const taskArray = getNestedProperty(parsedYaml, taskPath.split('.'));
+
+        if (Array.isArray(taskArray)) {
+            for (const task of taskArray) {
+                if (task[identifierField]) {
+                    tasks.push({ name: task[identifierField], command: parseTaskName(task[identifierField]) });
                 }
             }
         }
@@ -166,7 +169,14 @@ function activate(context) {
             }
             taskName = `${taskName}${flags}`;
         }
+        const exportToFile = configurations.get('exportToFile');
+        if (exportToFile) {
+            taskName = `${taskName} > ${exportToFile}`;
+        }
         return taskName;
+    }
+    function getNestedProperty(obj, pathArray) {
+        return pathArray.reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined), obj);
     }
 
 	context.subscriptions.push(hoverProvider, 
@@ -174,6 +184,29 @@ function activate(context) {
         showTasksCommand,
         statusBarItem);
 }
+
+// Register a status bar item
+const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+statusBarItem.text = "$(play) YAML Tasks";
+statusBarItem.tooltip = "View and run YAML tasks";
+statusBarItem.command = "yaml-task-runner.showYamlTasks";
+statusBarItem.show();
+
+// Function to update the visibility of the status bar item
+function updateStatusBarVisibility() {
+    const editor = vscode.window.activeTextEditor;
+    if (editor && (editor.document.fileName.endsWith('.yml') || editor.document.fileName.endsWith('.yaml'))) {
+        statusBarItem.show();
+    } else {
+        statusBarItem.hide();
+    }
+}
+
+// Update visibility when the active editor changes
+vscode.window.onDidChangeActiveTextEditor(updateStatusBarVisibility);
+
+// Update visibility when the extension is activated
+updateStatusBarVisibility();
 
 function deactivate() {}
 
