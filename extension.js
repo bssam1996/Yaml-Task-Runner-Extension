@@ -30,14 +30,18 @@ function activate(context) {
                     // Check if the current line matches a task with a `name` field
                     const matchingTask = tasks.find(task => lineText.includes(task.name));
                     if (matchingTask) {
-                        var taskName = parseTaskName(matchingTask.name);
+                        var fullCommand = parseTaskName(matchingTask.name);
+                        const parsedComponents = {
+                            taskName: matchingTask.name,
+                            commandToRun: fullCommand
+                        }
                         
                         const commandUri = vscode.Uri.parse(
-                            `command:yaml-task-runner.runYamlTask?${encodeURIComponent(JSON.stringify([taskName]))}`
+                            `command:yaml-task-runner.runYamlTask?${encodeURIComponent(JSON.stringify([parsedComponents]))}`
                         );
 
                         const contents = new vscode.MarkdownString();
-                        contents.appendMarkdown(`**Run Task:** \`${taskName}\`\n\n`);
+                        contents.appendMarkdown(`**Run Task:** \`${fullCommand}\`\n\n`);
                         contents.appendMarkdown(`[▶️ Run](${commandUri})`);
                         contents.isTrusted = true;
 
@@ -54,13 +58,17 @@ function activate(context) {
 
 	const runCommand = vscode.commands.registerCommand(
         'yaml-task-runner.runYamlTask',
-        (commandToRun) => {
+        ({ commandToRun, taskName }) => {
             if (!commandToRun) {
                 vscode.window.showErrorMessage('No command specified');
                 return;
             }
+            var terminalName = 'YAML Task Runner';
+            if (taskName) {
+                terminalName = taskName;
+            }
             // Create a new terminal or reuse an existing one
-            const terminal = vscode.window.createTerminal('YAML Task Runner');
+            const terminal = vscode.window.createTerminal(terminalName);
             terminal.show(true); // Show the terminal
             terminal.sendText(commandToRun); // Send the command to the terminal
 
@@ -127,7 +135,7 @@ function activate(context) {
                 );
                 
                 if (selectedTask) {
-                    vscode.commands.executeCommand('yaml-task-runner.runYamlTask', selectedTask.description);
+                    vscode.commands.executeCommand('yaml-task-runner.runYamlTask', {commandToRun: selectedTask.description, taskName: selectedTask.label});
                 }
             } catch (error) {
                 vscode.window.showErrorMessage(`Error parsing YAML tasks: ${error}`);

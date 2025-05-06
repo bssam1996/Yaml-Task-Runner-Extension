@@ -40,6 +40,9 @@ This extension contributes the following settings:
 ## Release Notes
 
 ### 0.0.2
+* Replaced Terminal name when running task to just task name
+
+### 0.0.2
 
 * Added exportToFile option.
 * Made default scheme for yaml files configurable.

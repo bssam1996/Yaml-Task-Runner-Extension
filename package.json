@@ -2,7 +2,7 @@
   "name": "yaml-task-runner",
   "displayName": "YAML Task Runner",
   "description": "Run specific tasks when hovering over them with specific tools and flags. It picks up the name of the task and complete the rest based on the configuration.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "icon": "images/yaml-task-runner.png",
   "publisher": "bassamabozaid",
   "repository": "https://github.com/bssam1996/Yaml-Task-Runner-Extension",
