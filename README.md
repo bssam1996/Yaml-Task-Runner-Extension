@@ -32,6 +32,8 @@ This extension contributes the following settings:
 * `yaml-task-runner.exportToFile`: Add '> <filename>' at the end of the command to export the output to a file. eg. docker run -name '<task-name>' > <filename>
 * `yaml-task-runner.taskPath`: Path to the tasks array in the YAML file (e.g., 'build.spec.tasks').
 * `yaml-task-runner.identifierField`: Field name used to identify tasks (e.g., 'name').
+* `yaml-task-runner.disableHover`: Disabling the hover for the task name. If you want to disable the hover for the task name, set it to true.
+* `yaml-task-runner.disablePlayButtons`: Disabling the play buttons for the task name. If you want to disable the play buttons for the task name, set it to true.
 
 ## Known Issues
 
@@ -39,7 +41,12 @@ This extension contributes the following settings:
 
 ## Release Notes
 
-### 0.0.2
+### 0.0.4
+* Added option to disable hovering message.
+* Added option to disable play buttons.
+* Added Run Task clickable above task names.
+
+### 0.0.3
 * Replaced Terminal name when running task to just task name
 
 ### 0.0.2

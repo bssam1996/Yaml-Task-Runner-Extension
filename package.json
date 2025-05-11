@@ -2,7 +2,7 @@
   "name": "yaml-task-runner",
   "displayName": "YAML Task Runner",
   "description": "Run specific tasks when hovering over them with specific tools and flags. It picks up the name of the task and complete the rest based on the configuration.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "icon": "images/yaml-task-runner.png",
   "publisher": "bassamabozaid",
   "repository": "https://github.com/bssam1996/Yaml-Task-Runner-Extension",
@@ -63,6 +63,16 @@
             "type": "string",
             "default": "name",
             "description": "Field name used to identify tasks (e.g., 'name')."
+        },
+        "yaml-task-runner.disableHover": {
+            "type": "boolean",
+            "default": false,
+            "description": "Disabling the hover for the task name. If you want to disable the hover for the task name, set it to true."
+        },
+        "yaml-task-runner.disablePlayButtons": {
+            "type": "boolean",
+            "default": false,
+            "description": "Disabling the play buttons for the task name. If you want to disable the play buttons for the task name, set it to true."
         }
       }
     }
