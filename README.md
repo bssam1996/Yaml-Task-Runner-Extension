@@ -28,7 +28,8 @@ This extension contributes the following settings:
 
 * `yaml-task-runner.tool`: Tool to be used when running the task. eg. 'docker', 'docker-compose', 'kubectl', 'helm', 'kustomize', 'terraform', etc.
 * `yaml-task-runner.mainFlag`: Add the task name in a flag. Leave empty if you want to run the task directly. eg. docker run -name '<task-name>'
-* `yaml-task-runner.additionalFlags`: Additional Flags to be added. eg. docker run -name '<task-name>' -rm -interactive.
+* `yaml-task-runner.additionalFlags`: Additional Flags to be added after the task name. eg. docker run -name '<task-name>' -rm -interactive. It concatenates `-` before each flag.
+* `yaml-task-runner.precedingFlags`: Additional Flags to be added before the task name. eg. docker run -rm -interactive -name '<task-name>'. It concatenates `-` before each flag.
 * `yaml-task-runner.exportToFile`: Add '> <filename>' at the end of the command to export the output to a file. eg. docker run -name '<task-name>' > <filename>
 * `yaml-task-runner.taskPath`: Path to the tasks array in the YAML file (e.g., 'build.spec.tasks').
 * `yaml-task-runner.identifierField`: Field name used to identify tasks (e.g., 'name').
@@ -40,6 +41,8 @@ This extension contributes the following settings:
 -
 
 ## Release Notes
+### 0.0.5
+* Added `precedingFlags` option to add option before the main flag.
 
 ### 0.0.4
 * Added option to disable hovering message.

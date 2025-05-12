@@ -25,8 +25,13 @@ function parseTaskName(taskName) {
         if (configurations.get('mainFlag')) {
             taskName = `-${configurations.get('mainFlag')}="${taskName}"`;
         }
-        if (configurations.get('tool')) {
-            taskName = configurations.get('tool') + ' ' + taskName;
+        const precedingFlags = configurations.get('precedingFlags');
+        if (precedingFlags) {
+            var pflags = ""
+            for (const pflag of precedingFlags) {
+                pflags += ` -${pflag}`;
+            }
+            taskName = `${pflags} ${taskName}`;
         }
         const additionalFlags = configurations.get('additionalFlags');
         if (additionalFlags) {
@@ -35,6 +40,9 @@ function parseTaskName(taskName) {
                 flags += ` -${flag}`;
             }
             taskName = `${taskName}${flags}`;
+        }
+        if (configurations.get('tool')) {
+            taskName = configurations.get('tool') + ' ' + taskName;
         }
         const exportToFile = configurations.get('exportToFile');
         if (exportToFile) {
