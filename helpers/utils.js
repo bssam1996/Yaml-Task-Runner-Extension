@@ -42,7 +42,7 @@ function parseTaskName(taskName) {
             taskName = `${taskName}${flags}`;
         }
         if (configurations.get('tool')) {
-            taskName = configurations.get('tool') + ' ' + taskName;
+            taskName = configurations.get('tool') + ' ' + taskName.trimStart();
         }
         const exportToFile = configurations.get('exportToFile');
         if (exportToFile) {

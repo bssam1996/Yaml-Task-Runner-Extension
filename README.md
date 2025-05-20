@@ -41,6 +41,9 @@ This extension contributes the following settings:
 -
 
 ## Release Notes
+### 0.0.6
+* Trimming left the task name before appending to tool name.
+
 ### 0.0.5
 * Added `precedingFlags` option to add option before the main flag.
 
